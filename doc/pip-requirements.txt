@@ -1,0 +1,4 @@
+markdown
+mako 
+PyYAML 
+git+git://github.com/brendonh/rantbase.git

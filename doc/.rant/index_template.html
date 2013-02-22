@@ -1,0 +1,12 @@
+<h1>${config['title']} &mdash; Index</h1>
+
+% for tag in sorted(byTag):
+  <a name="tag-${tag}"></a>
+  <h3>#${tag}</h3>
+  <ul>
+    % for title, url in sorted(byTag[tag]):
+      <li><a href="${config['baseUrl']}${url}">${title}</a></li>
+    % endfor
+  </ul>
+% endfor
+

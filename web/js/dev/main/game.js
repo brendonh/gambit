@@ -9,6 +9,12 @@ define([
     _.extend(Game.prototype, {
         start: function() {
             console.log("Starting game", this.id);
+
+            if (!this.initSocket()) {
+                alert("No websockets!");
+                return;
+            }
+
             $("#main").html(_.template(tmplGame)({ gameID: this.id }));
             this.canvas = $("#game-" + this.id).get(0);
 
@@ -19,6 +25,25 @@ define([
 
             this.render();
         },
+
+        initSocket: function() {
+            var socket;
+            if ("WebSocket" in window) {
+                socket = window.WebSocket;
+            } else if ("MozWebSocket" in window) {
+                socket = window.MozWebSocket;
+            }
+
+            if (!socket) {
+                return false;
+            }
+
+            this.socket = new socket("ws://gambit.brendonh.org:4567");
+            this.socket.onopen = _.bind(this.onConnect, this);
+            
+            return true;
+        },
+
 
         initContext: function() {
             try {
@@ -37,6 +62,11 @@ define([
             gl.depthFunc(gl.LEQUAL);
             this.gl = gl;
             return true;
+        },
+
+        onConnect: function() {
+            console.log("Connected!");
+            this.socket.send("Hello");
         },
 
         render: function() {
